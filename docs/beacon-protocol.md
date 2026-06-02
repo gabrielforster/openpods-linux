@@ -58,10 +58,19 @@ of byte 6, and so on.
 | `7` | **Single-device model char** (`idSingle`) | low nibble of byte 3; used for Max / Powerbeats Pro / Studio 3 |
 | `10` | **Flip flag** | `flipped = (val & 0x02) == 0` |
 | `11` | **In-ear status** | bit 1 = left, bit 3 = right (swapped if flipped) |
-| `12` | **Battery A** | left if not flipped, right if flipped |
-| `13` | **Battery B** | right if not flipped, left if flipped; also the "single" battery |
+| `12` | **Battery A** | right if not flipped, left if flipped |
+| `13` | **Battery B** | left if not flipped, right if flipped; also the "single" battery |
 | `14` | **Charging bits** | bit 0 = left, bit 1 = right, bit 2 = case (left/right swap if flipped) |
 | `15` | **Case battery** | |
+
+> ⚠️ **Left/right battery, reconciled with the code.** The authoritative source
+> `PodsStatus.java:48-51` reads `left = charAt(flip ? 12 : 13)` and
+> `right = charAt(flip ? 13 : 12)`, so **when *not* flipped the left figure comes
+> from char 13 and the right from char 12** (and the reverse when flipped). The
+> upstream class Javadoc prose ("the 12th and 13th characters … left and right")
+> says the opposite; the table above follows the *code*, which is ground truth.
+> Charging (char 14) and in-ear (char 11) keep their natural mapping (bit 0/bit 1
+> = left/right, bit 1/bit 3 = left/right) in the not-flipped case.
 
 ### The "flip" flag
 
@@ -150,7 +159,7 @@ Suppose BlueZ hands us `ManufacturerData[0x004C]` =
 1. Validate: length 27, `[0]==0x07`, `[1]==0x19`. ✓
 2. `idFull` = chars 6–9. `idSingle` = char 7.
 3. `flipped` = `(hexval(char[10]) & 0x02) == 0`.
-4. `left` = char 12 (or 13 if flipped); `right` = char 13 (or 12 if flipped); `case` = char 15.
+4. `left` = char 13 (or 12 if flipped); `right` = char 12 (or 13 if flipped); `case` = char 15.
 5. Convert each nibble per §4; apply charging/in-ear per §5; pick model per §6.
 
 The Go `pods` package implements exactly these steps as pure functions, with the
