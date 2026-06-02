@@ -2,9 +2,10 @@
 
 > Status: **Design** (not yet implemented) · Date: 2026-06-01 · Target language: **Go**
 
-This folder contains the design for a Linux port of OpenPods: a tool that shows
-the battery level of your AirPods (and compatible Beats) on a Linux desktop, the
-same way the Android app does.
+This folder contains the design for a Linux port of [OpenPods](https://github.com/adolfintel/OpenPods)
+by **Federico Dossena** (© 2019–2022, GPLv3): a tool that shows the battery level
+of your AirPods (and compatible Beats) on a Linux desktop, the same way the
+Android app does.
 
 ## What this is (and is not)
 
@@ -26,7 +27,7 @@ the BLE beacons for battery.
 | --- | --- |
 | Goal | Battery monitoring only — a faithful port of the Android app's functionality |
 | Language / stack | Go (BlueZ over D-Bus; `fyne/systray`; `godbus` notifications; Fyne GUI) |
-| Repository | This **separate** standalone repo (`openpods-linux`); the upstream Android app lives in its own repo |
+| Repository | This **separate** standalone repo (`openpods-linux`); the upstream Android app ([adolfintel/OpenPods](https://github.com/adolfintel/OpenPods)) lives in its own repo |
 | Frontends | CLI/daemon, desktop notifications, system-tray icon, full GUI window |
 | Architecture | **Daemon-centric** — one background process owns BlueZ; thin frontends read from it over a Unix socket |
 | Desktop targets | Portable to freedesktop standards; primary dev/test host is **i3 on X11** |

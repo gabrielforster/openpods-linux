@@ -76,5 +76,5 @@ bit math is in [`../beacon-protocol.md`](../beacon-protocol.md).
 
 This reference code and the artwork are GPLv3 (see [`../../LICENSE`](../../LICENSE)).
 The Linux port, as a derivative work, is also GPLv3. Preserve the original
-copyright attribution to **Federico Dossena** and link back to the upstream
-project.
+copyright attribution to **Federico Dossena** (© 2019–2022) and link back to the
+upstream project: <https://github.com/adolfintel/OpenPods>.
