@@ -21,7 +21,9 @@ decodes them, and shows **left / right / case battery %, charging, and in-ear
 status**. It does **not** manage the audio connection — your OS (BlueZ +
 PipeWire/PulseAudio) already does that, exactly like on Android.
 
-## Planned frontends
+## Frontends
+
+All four are implemented; pick whichever fits your desktop (they can run together):
 
 - **CLI / daemon** — `openpods status [--json|--waybar|--watch]`, ideal for
   i3/polybar/waybar status bars (the primary display on a tiling WM).
