@@ -1,0 +1,17 @@
+[Unit]
+Description=OpenPods AirPods battery monitor
+Documentation=https://github.com/adolfintel/OpenPods
+# Start once the user's Bluetooth stack is up; keep running if it isn't yet
+# (the daemon waits for org.bluez and retries).
+After=bluetooth.target
+
+[Service]
+Type=simple
+# Adjust the path if you installed the binary elsewhere
+# (e.g. `go build -o ~/.local/bin/openpodsd ./cmd/openpodsd`).
+ExecStart=%h/.local/bin/openpodsd
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target
