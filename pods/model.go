@@ -48,3 +48,30 @@ func (m Model) String() string {
 	}
 	return "unknown"
 }
+
+// displayNames are human-friendly model names for UI surfaces (CLI, notifications,
+// tray, GUI). The single source so a new model is named in one place.
+var displayNames = map[Model]string{
+	ModelAirPods1:      "AirPods (1st gen)",
+	ModelAirPods2:      "AirPods (2nd gen)",
+	ModelAirPods3:      "AirPods (3rd gen)",
+	ModelAirPodsPro:    "AirPods Pro",
+	ModelAirPodsPro2:   "AirPods Pro 2",
+	ModelAirPodsPro3:   "AirPods Pro 3",
+	ModelAirPodsMax:    "AirPods Max",
+	ModelPowerbeatsPro: "Powerbeats Pro",
+	ModelBeatsX:        "Beats X",
+	ModelBeatsFlex:     "Beats Flex",
+	ModelBeatsSolo3:    "Beats Solo 3",
+	ModelBeatsStudio3:  "Beats Studio 3",
+	ModelPowerbeats3:   "Powerbeats 3",
+}
+
+// DisplayName returns a human-friendly model name (e.g. "AirPods Pro"),
+// falling back to "AirPods" for unknown or unrecognized models.
+func DisplayName(m Model) string {
+	if n, ok := displayNames[m]; ok {
+		return n
+	}
+	return "AirPods"
+}

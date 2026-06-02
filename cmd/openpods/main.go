@@ -84,7 +84,7 @@ func sampleBeacons() []ble.Beacon {
 
 func formatHuman(s pods.Status) string {
 	var b strings.Builder
-	fmt.Fprintln(&b, displayName(s.Model))
+	fmt.Fprintln(&b, pods.DisplayName(s.Model))
 	if s.Single {
 		writePod(&b, "Battery", s.Left, false)
 	} else {
@@ -113,28 +113,4 @@ func writePod(b *strings.Builder, label string, p pods.Pod, showInEar bool) {
 		suffix = "  (" + strings.Join(extras, ", ") + ")"
 	}
 	fmt.Fprintf(b, "  %-8s %3d%%%s\n", label, pct, suffix)
-}
-
-var displayNames = map[pods.Model]string{
-	pods.ModelAirPods1:      "AirPods (1st gen)",
-	pods.ModelAirPods2:      "AirPods (2nd gen)",
-	pods.ModelAirPods3:      "AirPods (3rd gen)",
-	pods.ModelAirPodsPro:    "AirPods Pro",
-	pods.ModelAirPodsPro2:   "AirPods Pro 2",
-	pods.ModelAirPodsPro3:   "AirPods Pro 3",
-	pods.ModelAirPodsMax:    "AirPods Max",
-	pods.ModelPowerbeatsPro: "Powerbeats Pro",
-	pods.ModelBeatsX:        "Beats X",
-	pods.ModelBeatsFlex:     "Beats Flex",
-	pods.ModelBeatsSolo3:    "Beats Solo 3",
-	pods.ModelBeatsStudio3:  "Beats Studio 3",
-	pods.ModelPowerbeats3:   "Powerbeats 3",
-}
-
-// displayName returns a human-friendly model name, falling back to "AirPods".
-func displayName(m pods.Model) string {
-	if n, ok := displayNames[m]; ok {
-		return n
-	}
-	return "AirPods"
 }

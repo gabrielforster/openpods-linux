@@ -396,6 +396,24 @@ func TestPodMethods(t *testing.T) {
 	}
 }
 
+func TestDisplayName(t *testing.T) {
+	cases := map[pods.Model]string{
+		pods.ModelAirPods1:      "AirPods (1st gen)",
+		pods.ModelAirPodsPro:    "AirPods Pro",
+		pods.ModelAirPodsPro2:   "AirPods Pro 2",
+		pods.ModelAirPodsMax:    "AirPods Max",
+		pods.ModelPowerbeatsPro: "Powerbeats Pro",
+		pods.ModelBeatsStudio3:  "Beats Studio 3",
+		pods.ModelUnknown:       "AirPods",
+		pods.Model(999):         "AirPods",
+	}
+	for m, want := range cases {
+		if got := pods.DisplayName(m); got != want {
+			t.Errorf("DisplayName(%v) = %q, want %q", m, got, want)
+		}
+	}
+}
+
 func TestModelString(t *testing.T) {
 	tests := []struct {
 		model pods.Model
