@@ -4,11 +4,13 @@ Monitor your AirPods (and compatible Beats) battery on a Linux desktop — a
 faithful Go port of the Android [OpenPods](https://github.com/adolfintel/OpenPods)
 app by Federico Dossena.
 
-> **Status: in development.** The beacon decode core (`pods`), the BlueZ
-> scanner (`ble`), and a one-shot `openpods status` CLI are implemented and
-> tested. The daemon, IPC, notifications, tray, and GUI are not built yet — see
-> the [roadmap](docs/roadmap.md). The repo also holds the design docs and a copy
-> of the upstream Android implementation as a knowledge base.
+> **Status: in development.** The decode core (`pods`), the BlueZ scanner
+> (`ble`), the `openpodsd` daemon (state + staleness, Unix-socket NDJSON IPC,
+> connect/disconnect notifications), and the `openpods` CLI (one-shot or
+> daemon-backed, `--json`/`--waybar`/`--watch`) are implemented and tested. The
+> tray icon and GUI window are not built yet — see the [roadmap](docs/roadmap.md).
+> The repo also holds the design docs and a copy of the upstream Android
+> implementation as a knowledge base.
 
 ## What it does
 
@@ -64,12 +66,51 @@ AirPods Pro
   Case      85%
 ```
 
+### Run as a daemon
+
+`openpodsd` owns a single BlueZ scan and serves status to thin frontends over a
+Unix socket (`$XDG_RUNTIME_DIR/openpods.sock`), firing desktop notifications on
+connect/disconnect. The `openpods` CLI then reads the daemon instead of scanning
+itself (falling back to a one-shot scan if the daemon isn't running).
+
+```sh
+go build -o ~/.local/bin/openpodsd ./cmd/openpodsd
+go build -o ~/.local/bin/openpods  ./cmd/openpods
+
+# install and enable the user service
+install -Dm644 packaging/systemd/openpodsd.service ~/.config/systemd/user/openpodsd.service
+systemctl --user daemon-reload
+systemctl --user enable --now openpodsd
+```
+
+Status-bar integration (the daemon makes each refresh cheap — it just reads the
+last-known status, no per-refresh scan):
+
+```ini
+# i3blocks: ~/.config/i3blocks/config
+[openpods]
+command=openpods status --waybar | jq -r '.text'
+interval=5
+```
+
+```ini
+# polybar
+[module/openpods]
+type = custom/script
+exec = openpods status --waybar | jq -r .text
+interval = 5
+```
+
+`openpods status --watch` streams live updates from the daemon. See
+[`docs/linux-bluetooth.md`](docs/linux-bluetooth.md) for the i3/Wayland tray
+caveats.
+
 Target toolchain (dev host): Go ≥ 1.25, BlueZ ≥ 5.72, Linux with `org.bluez` on
 the system D-Bus.
 
-The remaining frontends are being built incrementally following the design;
-[`PROMPT.md`](PROMPT.md) is the kickoff prompt that points an AI coding agent at
-the docs and the next phase.
+The remaining frontends (tray, GUI) are being built incrementally following the
+design; [`PROMPT.md`](PROMPT.md) is the kickoff prompt that points an AI coding
+agent at the docs and the next phase.
 
 ## License
 

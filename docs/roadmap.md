@@ -39,8 +39,17 @@ the flipped case, charging, and disconnected (`15`) nibbles.
 **Done when:** with AirPods out of the case, `openpods status` prints correct
 L/R/case battery on the i3 box.
 
-## Phase 2 — Daemon, IPC, bar output, notifications
+## Phase 2 — Daemon, IPC, bar output, notifications — ✅ done
 **Goal:** genuinely useful day-to-day on i3.
+
+> **Status: done.** Implemented `core` (state + 30s staleness + connect/disconnect
+> edges), `ipc` (Snapshot model + Unix-socket NDJSON server/client), `notify`
+> (freedesktop notifications), and `openpodsd` (wiring it together, with a
+> `--replay` mode), plus a systemd **user** unit. `openpods status` learned
+> `--json`, `--waybar`, and `--watch`, and reads the daemon socket when present
+> (one-shot scan otherwise). The full pipeline is integration-tested offline via
+> `--replay` under the race detector; low-battery notifications remain a later
+> opt-in (see below). On-hardware verification is pending a device.
 
 - `core` state + 30 s staleness rule + connect/disconnect/low-battery edges.
 - `openpodsd` daemon; `ipc` Unix-socket NDJSON server; systemd **user** unit.

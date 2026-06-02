@@ -1,8 +1,9 @@
 # OpenPods for Linux — Design Docs
 
-> Status: **In development** — `pods` decode core, `ble` BlueZ scanner, and the
-> `openpods status` CLI are implemented and tested (Phases 0–1); daemon/IPC,
-> notifications, tray, and GUI are pending. · Target language: **Go**
+> Status: **In development** — `pods` decode core, `ble` BlueZ scanner, the
+> `openpodsd` daemon (`core` state + `ipc` socket + `notify`), and the
+> `openpods` CLI are implemented and tested (Phases 0–2); the tray and GUI are
+> pending. · Target language: **Go**
 
 This folder contains the design for a Linux port of [OpenPods](https://github.com/adolfintel/OpenPods)
 by **Federico Dossena** (© 2019–2022, GPLv3): a tool that shows the battery level
