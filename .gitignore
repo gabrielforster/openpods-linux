@@ -5,6 +5,12 @@
 *.test
 *.out
 
+# Built command binaries (when built into the repo root without -o)
+/openpods
+/openpodsd
+/openpods-tray
+/openpods-gui
+
 # Go workspace / module cache (local)
 go.work
 go.work.sum
