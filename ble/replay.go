@@ -1,9 +1,24 @@
 package ble
 
 import (
+	"encoding/hex"
+	"strings"
 	"sync"
 	"time"
 )
+
+// DemoBeacons returns a canned advertisement for the --replay mode: an AirPods
+// Pro reporting Left 55% (charging, in-ear), Right 100% (in-ear), Case 85%
+// (charging) — chosen to exercise the charging and in-ear indicators.
+//
+// Byte layout (see beacon-protocol.md §3): idFull 0E20 = AirPods Pro; flip
+// nibble 2 (not flipped); in-ear nibble A (bits 1+3 = left+right); battery A=10
+// (char 12 = right), B=5 (char 13 = left); charge nibble 5 (bits 0+2 =
+// left+case); case nibble 8.
+func DemoBeacons() []Beacon {
+	data, _ := hex.DecodeString("0719010E202AA558" + strings.Repeat("00", 19))
+	return []Beacon{{Address: "replay", Data: data, RSSI: -45}}
+}
 
 // replaySource is a Source that synthesizes beacons from a canned list, for
 // developing and demoing frontends without AirPods present (the --replay mode).

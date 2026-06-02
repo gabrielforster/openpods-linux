@@ -7,7 +7,6 @@ package main
 
 import (
 	"context"
-	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -111,14 +110,9 @@ func oneShot(replay bool, timeout time.Duration, format formatter, stdout, stder
 
 func newSource(replay bool) (ble.Source, error) {
 	if replay {
-		return ble.NewReplaySource(sampleBeacons(), 2*time.Second), nil
+		return ble.NewReplaySource(ble.DemoBeacons(), 2*time.Second), nil
 	}
 	return ble.NewBlueZSource()
-}
-
-func sampleBeacons() []ble.Beacon {
-	data, _ := hex.DecodeString("0719010E2020A508" + strings.Repeat("00", 19))
-	return []ble.Beacon{{Address: "replay", Data: data, RSSI: -45}}
 }
 
 // --- output formats (battery rendering lives in package render) ---

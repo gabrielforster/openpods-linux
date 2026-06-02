@@ -87,6 +87,33 @@ func TestReplaySourcePacesWithInterval(t *testing.T) {
 	}
 }
 
+func TestDemoBeaconsDecodeWithChargingAndInEar(t *testing.T) {
+	bs := ble.DemoBeacons()
+	if len(bs) == 0 {
+		t.Fatal("DemoBeacons returned none")
+	}
+	if bs[0].RSSI < ble.DefaultMinRSSI {
+		t.Errorf("RSSI %d is below the gate %d; replay would be filtered out", bs[0].RSSI, ble.DefaultMinRSSI)
+	}
+
+	st, err := pods.Decode(bs[0].Data)
+	if err != nil {
+		t.Fatalf("demo beacon failed to decode: %v", err)
+	}
+	if st.Model != pods.ModelAirPodsPro {
+		t.Errorf("Model = %s, want airpodspro", st.Model)
+	}
+	if p, _ := st.Left.Percent(); p != 55 || !st.Left.Charging || !st.Left.InEar {
+		t.Errorf("Left = %+v, want 55%% charging+in-ear", st.Left)
+	}
+	if p, _ := st.Right.Percent(); p != 100 || st.Right.Charging || !st.Right.InEar {
+		t.Errorf("Right = %+v, want 100%% in-ear (not charging)", st.Right)
+	}
+	if p, _ := st.Case.Percent(); p != 85 || !st.Case.Charging {
+		t.Errorf("Case = %+v, want 85%% charging", st.Case)
+	}
+}
+
 func TestReplaySourceCloseDoesNotHang(t *testing.T) {
 	src := ble.NewReplaySource([]ble.Beacon{{Address: "a", Data: []byte("X")}}, time.Hour)
 	done := make(chan error, 1)

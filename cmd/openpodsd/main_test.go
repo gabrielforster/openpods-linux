@@ -14,7 +14,7 @@ import (
 // replay source -> scanner -> core.Monitor -> ipc.Server -> client.
 func TestDaemonServesReplaySnapshots(t *testing.T) {
 	socket := filepath.Join(t.TempDir(), "openpods.sock")
-	src := ble.NewReplaySource(demoBeacons(), 20*time.Millisecond)
+	src := ble.NewReplaySource(ble.DemoBeacons(), 20*time.Millisecond)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

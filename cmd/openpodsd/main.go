@@ -7,13 +7,11 @@ package main
 
 import (
 	"context"
-	"encoding/hex"
 	"flag"
 	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 
@@ -96,14 +94,7 @@ func forwardNotifications(mon *core.Monitor, notifier notify.Notifier) {
 
 func makeSource(replay bool) (ble.Source, error) {
 	if replay {
-		return ble.NewReplaySource(demoBeacons(), 2*time.Second), nil
+		return ble.NewReplaySource(ble.DemoBeacons(), 2*time.Second), nil
 	}
 	return ble.NewBlueZSource()
-}
-
-// demoBeacons is the canned advertisement used by --replay: AirPods Pro at
-// Left 55%, Right 100%, Case 85%.
-func demoBeacons() []ble.Beacon {
-	data, _ := hex.DecodeString("0719010E2020A508" + strings.Repeat("00", 19))
-	return []ble.Beacon{{Address: "replay", Data: data, RSSI: -45}}
 }
