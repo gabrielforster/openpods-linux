@@ -76,8 +76,15 @@ live battery; a notification fires on connect; battery hides after 30 s idle.
 
 **Done when:** tray icon shows status on a SNI desktop; docs explain the i3 path.
 
-## Phase 4 — GUI window (`cmd/openpods-gui`)
+## Phase 4 — GUI window (`cmd/openpods-gui`) — ✅ done
 **Goal:** the detailed "home screen" view, portable everywhere.
+
+> **Status: done.** Implemented `cmd/openpods-gui` (Fyne): model name, per-pod
+> artwork from `assets`, battery values, and charging/in-ear indicators, reading
+> the daemon socket and re-rendering live. The snapshot→view-model mapping is
+> unit-tested and the widget tree is smoke-tested; the binary launches and
+> connects cleanly. Fyne needs a C/OpenGL/X11 toolchain — see the README build
+> prerequisites. Visual layout polish and verification are pending.
 
 - Fyne window replicating the Android layout: pod/case images + battery bars +
   in-ear/charging indicators, reading the socket and live-updating.
