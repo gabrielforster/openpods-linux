@@ -6,12 +6,11 @@ package notify
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
 
 	"github.com/godbus/dbus/v5"
 
 	"openpods-linux/ipc"
+	"openpods-linux/render"
 )
 
 const (
@@ -25,44 +24,9 @@ const (
 // for a disconnect or when the snapshot has no fresh figures.
 func Message(connected bool, snap ipc.Snapshot) (summary, body string) {
 	if !connected {
-		return snap.Name + " disconnected", ""
+		return render.Name(snap) + " disconnected", ""
 	}
-	return snap.Name + " connected", batterySummary(snap)
-}
-
-func batterySummary(snap ipc.Snapshot) string {
-	if snap.Single {
-		return podText(snap.Left)
-	}
-	var parts []string
-	if t := labeledPod("L", snap.Left); t != "" {
-		parts = append(parts, t)
-	}
-	if t := labeledPod("R", snap.Right); t != "" {
-		parts = append(parts, t)
-	}
-	if t := labeledPod("Case", snap.Case); t != "" {
-		parts = append(parts, t)
-	}
-	return strings.Join(parts, " · ")
-}
-
-func labeledPod(label string, p *ipc.PodView) string {
-	if p == nil {
-		return ""
-	}
-	return label + " " + podText(p)
-}
-
-func podText(p *ipc.PodView) string {
-	if p == nil {
-		return ""
-	}
-	s := strconv.Itoa(p.Percent) + "%"
-	if p.Charging {
-		s += "⚡"
-	}
-	return s
+	return render.Name(snap) + " connected", render.Line(snap)
 }
 
 // Notifier sends desktop notifications.

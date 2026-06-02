@@ -13,12 +13,12 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
 	"openpods-linux/ble"
 	"openpods-linux/ipc"
+	"openpods-linux/render"
 )
 
 func main() {
@@ -121,42 +121,9 @@ func sampleBeacons() []ble.Beacon {
 	return []ble.Beacon{{Address: "replay", Data: data, RSSI: -45}}
 }
 
-// --- formatters ---
+// --- output formats (battery rendering lives in package render) ---
 
-func formatHuman(s ipc.Snapshot) string {
-	var b strings.Builder
-	fmt.Fprintln(&b, nameOf(s))
-	switch {
-	case s.Stale:
-		fmt.Fprintln(&b, "  updating…")
-	case s.Single:
-		writePodView(&b, "Battery", s.Left)
-	default:
-		writePodView(&b, "Left", s.Left)
-		writePodView(&b, "Right", s.Right)
-		writePodView(&b, "Case", s.Case)
-	}
-	return b.String()
-}
-
-func writePodView(b *strings.Builder, label string, p *ipc.PodView) {
-	if p == nil {
-		fmt.Fprintf(b, "  %-8s —\n", label)
-		return
-	}
-	var extras []string
-	if p.Charging {
-		extras = append(extras, "charging")
-	}
-	if p.InEar {
-		extras = append(extras, "in ear")
-	}
-	suffix := ""
-	if len(extras) > 0 {
-		suffix = "  (" + strings.Join(extras, ", ") + ")"
-	}
-	fmt.Fprintf(b, "  %-8s %3d%%%s\n", label, p.Percent, suffix)
-}
+func formatHuman(s ipc.Snapshot) string { return render.Human(s) }
 
 func formatJSON(s ipc.Snapshot) string {
 	line, err := ipc.Encode(s)
@@ -172,8 +139,8 @@ func formatWaybar(s ipc.Snapshot) string {
 		Tooltip string `json:"tooltip"`
 		Class   string `json:"class"`
 	}{
-		Text:    waybarText(s),
-		Tooltip: strings.TrimRight(formatHuman(s), "\n"),
+		Text:    render.Compact(s),
+		Tooltip: strings.TrimRight(render.Human(s), "\n"),
 		Class:   waybarClass(s),
 	}
 	b, err := json.Marshal(out)
@@ -192,38 +159,4 @@ func waybarClass(s ipc.Snapshot) string {
 	default:
 		return "disconnected"
 	}
-}
-
-func waybarText(s ipc.Snapshot) string {
-	if s.Stale {
-		return "…"
-	}
-	if s.Single {
-		return podPct(s.Left)
-	}
-	var parts []string
-	for _, p := range []*ipc.PodView{s.Left, s.Right, s.Case} {
-		if t := podPct(p); t != "" {
-			parts = append(parts, t)
-		}
-	}
-	return strings.Join(parts, " ")
-}
-
-func podPct(p *ipc.PodView) string {
-	if p == nil {
-		return ""
-	}
-	s := strconv.Itoa(p.Percent) + "%"
-	if p.Charging {
-		s += "⚡"
-	}
-	return s
-}
-
-func nameOf(s ipc.Snapshot) string {
-	if s.Name != "" {
-		return s.Name
-	}
-	return "AirPods"
 }
