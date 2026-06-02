@@ -31,7 +31,7 @@ func main() {
 	a := app.New()
 	a.SetIcon(fyne.NewStaticResource("openpods", assets.Icon()))
 	w := a.NewWindow("OpenPods")
-	w.SetContent(widget.NewLabel("OpenPods — connecting…"))
+	w.SetContent(container.NewCenter(widget.NewLabel("OpenPods — connecting…")))
 	w.Resize(fyne.NewSize(380, 260))
 
 	go watch(*socket, w)
@@ -44,7 +44,7 @@ func watch(socket string, w fyne.Window) {
 	for {
 		cl, err := ipc.Dial(socket)
 		if err != nil {
-			fyne.Do(func() { w.SetContent(widget.NewLabel("OpenPods — daemon not running")) })
+			fyne.Do(func() { w.SetContent(container.NewCenter(widget.NewLabel("OpenPods — daemon not running"))) })
 			time.Sleep(3 * time.Second)
 			continue
 		}
@@ -115,7 +115,9 @@ func buildContent(vd viewData) fyne.CanvasObject {
 	for _, c := range vd.Cards {
 		cards.Add(buildCard(c))
 	}
-	return container.NewVBox(title, container.NewCenter(cards))
+	// Center the whole thing so it sits in the middle of the window rather than
+	// clinging to the top-left (noticeable on large/tiled windows).
+	return container.NewCenter(container.NewVBox(title, cards))
 }
 
 func buildCard(c cardData) fyne.CanvasObject {
