@@ -4,9 +4,11 @@ Monitor your AirPods (and compatible Beats) battery on a Linux desktop — a
 faithful Go port of the Android [OpenPods](https://github.com/adolfintel/OpenPods)
 app by Federico Dossena.
 
-> **Status: design phase.** No code yet — this repo currently holds the design
-> docs, an initial build prompt, and a copy of the upstream Android implementation
-> as a knowledge base. Implementation starts at Phase 0 (see the roadmap).
+> **Status: in development.** The beacon decode core (`pods`), the BlueZ
+> scanner (`ble`), and a one-shot `openpods status` CLI are implemented and
+> tested. The daemon, IPC, notifications, tray, and GUI are not built yet — see
+> the [roadmap](docs/roadmap.md). The repo also holds the design docs and a copy
+> of the upstream Android implementation as a knowledge base.
 
 ## What it does
 
@@ -38,14 +40,36 @@ all frontends over a Unix socket. See [`docs/architecture.md`](docs/architecture
 | [`docs/roadmap.md`](docs/roadmap.md) | Phased, MVP-first build plan + test strategy |
 | [`docs/android-reference/`](docs/android-reference/) | Upstream Android source + artwork (ground truth) |
 
-## Building it
+## Building and running
 
-This repo is meant to be built incrementally with an AI coding agent (or by
-hand) following the design. **Start here:** [`PROMPT.md`](PROMPT.md) is a ready-to-use
-kickoff prompt that points the agent at the docs and the first phase.
+```sh
+go build ./...
+go test ./...
+```
+
+`openpods status` runs a bounded one-shot scan and prints the current battery:
+
+```sh
+go run ./cmd/openpods status              # scan real AirPods via BlueZ
+go run ./cmd/openpods status --replay     # no hardware: canned demo data
+go run ./cmd/openpods status --timeout 5s # bound the scan duration
+```
+
+Example output:
+
+```
+AirPods Pro
+  Left      55%
+  Right    100%
+  Case      85%
+```
 
 Target toolchain (dev host): Go ≥ 1.25, BlueZ ≥ 5.72, Linux with `org.bluez` on
 the system D-Bus.
+
+The remaining frontends are being built incrementally following the design;
+[`PROMPT.md`](PROMPT.md) is the kickoff prompt that points an AI coding agent at
+the docs and the next phase.
 
 ## License
 

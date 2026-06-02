@@ -4,8 +4,13 @@ MVP-first. Each phase is independently useful and ends with something runnable o
 the i3/X11 dev host. All four requested frontends are delivered, ordered so the
 highest-value, lowest-risk work lands first.
 
-## Phase 0 — Decode core (`pods`)
+## Phase 0 — Decode core (`pods`) — ✅ done
 **Goal:** a verified, pure Go port of the beacon decoder. Zero platform risk.
+
+> **Status: done.** Implemented in `pods/` (`Decode`, `Pod`, `Model`) with
+> table-driven tests at 100% statement coverage. Resolved a code-vs-prose
+> discrepancy in the left/right battery mapping in favour of the Android code
+> (see [`beacon-protocol.md`](./beacon-protocol.md) §3).
 
 - Port `PodsStatus` / `Pod` / model detection per
   [`beacon-protocol.md`](./beacon-protocol.md), with positions/constants named.
@@ -16,8 +21,15 @@ highest-value, lowest-risk work lands first.
 **Done when:** `go test ./pods/...` is green with vectors covering every model,
 the flipped case, charging, and disconnected (`15`) nibbles.
 
-## Phase 1 — BlueZ scanner + standalone CLI (`ble`, `cmd/openpods`)
+## Phase 1 — BlueZ scanner + standalone CLI (`ble`, `cmd/openpods`) — ✅ done
 **Goal:** prove the whole concept end-to-end on real hardware.
+
+> **Status: done.** Implemented in `ble/` (strongest-recent + RSSI selector,
+> Source seam, connection gate, Scanner, BlueZ/D-Bus backend, and a `--replay`
+> fake source) and `cmd/openpods` (`status`). The decode/selection/parsing logic
+> is unit-tested without hardware; the BlueZ connect/discovery loop is verified
+> by the manual checklist below. Final on-hardware verification (real AirPods
+> printing correct L/R/case battery) is still pending a device.
 
 - `ble` scanner over `godbus/dbus/v5`: discovery filter, `PropertiesChanged`
   subscription, `ManufacturerData[0x004C]` + `RSSI` extraction.
