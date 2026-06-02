@@ -74,8 +74,9 @@ connect/disconnect. The `openpods` CLI then reads the daemon instead of scanning
 itself (falling back to a one-shot scan if the daemon isn't running).
 
 ```sh
-go build -o ~/.local/bin/openpodsd ./cmd/openpodsd
-go build -o ~/.local/bin/openpods  ./cmd/openpods
+go build -o ~/.local/bin/openpodsd     ./cmd/openpodsd
+go build -o ~/.local/bin/openpods      ./cmd/openpods
+go build -o ~/.local/bin/openpods-tray ./cmd/openpods-tray  # optional SNI tray
 
 # install and enable the user service
 install -Dm644 packaging/systemd/openpodsd.service ~/.config/systemd/user/openpodsd.service
@@ -101,9 +102,12 @@ exec = openpods status --waybar | jq -r .text
 interval = 5
 ```
 
-`openpods status --watch` streams live updates from the daemon. See
-[`docs/linux-bluetooth.md`](docs/linux-bluetooth.md) for the i3/Wayland tray
-caveats.
+`openpods status --watch` streams live updates from the daemon.
+
+`openpods-tray` shows a StatusNotifierItem tray icon (KDE / GNOME+extension /
+waybar). On i3/polybar the SNI item needs an `snixembed` bridge — see
+[`docs/linux-bluetooth.md`](docs/linux-bluetooth.md) for the tray/notification
+caveats, where the CLI/`--waybar` path is recommended instead.
 
 Target toolchain (dev host): Go ≥ 1.25, BlueZ ≥ 5.72, Linux with `org.bluez` on
 the system D-Bus.

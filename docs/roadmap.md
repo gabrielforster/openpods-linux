@@ -60,8 +60,15 @@ L/R/case battery on the i3 box.
 **Done when:** daemon runs as a user service; an i3blocks/polybar module shows
 live battery; a notification fires on connect; battery hides after 30 s idle.
 
-## Phase 3 — Tray icon (`cmd/openpods-tray`)
+## Phase 3 — Tray icon (`cmd/openpods-tray`) — ✅ done
 **Goal:** first-class display on KDE/GNOME(+ext)/waybar.
+
+> **Status: done.** Implemented `cmd/openpods-tray` (fyne/systray SNI icon +
+> Quit menu) reading the daemon socket and updating title/tooltip live, plus the
+> `assets` package (embedded app icon). The snapshot→UI mapping is unit-tested;
+> the SNI event loop is glue. On i3/polybar the SNI item needs `snixembed` (the
+> CLI/`--waybar` path remains the recommended display there). Visual verification
+> on an SNI desktop is pending.
 
 - `fyne/systray` SNI icon + menu (summary, open window, quit), reading the socket.
 - Battery-aware icon; document the i3/polybar **XEmbed vs SNI** caveat and the
