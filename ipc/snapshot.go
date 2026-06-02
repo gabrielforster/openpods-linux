@@ -26,7 +26,8 @@ type PodView struct {
 type Snapshot struct {
 	Connected bool      `json:"connected"`
 	Stale     bool      `json:"stale"`
-	Model     string    `json:"model"`
+	Model     string    `json:"model"` // canonical id, e.g. "airpodspro"
+	Name      string    `json:"name"`  // human-friendly, e.g. "AirPods Pro"
 	Single    bool      `json:"single"`
 	Left      *PodView  `json:"left,omitempty"`
 	Right     *PodView  `json:"right,omitempty"`
@@ -42,6 +43,7 @@ func FromStatus(s pods.Status, connected, stale bool, updated time.Time) Snapsho
 		Connected: connected,
 		Stale:     stale,
 		Model:     s.Model.String(),
+		Name:      pods.DisplayName(s.Model),
 		Single:    s.Single,
 		Updated:   updated,
 	}

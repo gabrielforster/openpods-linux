@@ -23,6 +23,9 @@ func TestFromStatusStereo(t *testing.T) {
 	if !snap.Connected || snap.Stale || snap.Model != "airpodspro" || snap.Single {
 		t.Errorf("snapshot header = %+v", snap)
 	}
+	if snap.Name != "AirPods Pro" {
+		t.Errorf("Name = %q, want AirPods Pro", snap.Name)
+	}
 	if snap.Left == nil || snap.Left.Percent != 55 || snap.Left.Charging {
 		t.Errorf("Left = %+v", snap.Left)
 	}
@@ -102,7 +105,7 @@ func TestSnapshotJSONFieldNames(t *testing.T) {
 	if err := json.Unmarshal(b, &m); err != nil {
 		t.Fatal(err)
 	}
-	for _, key := range []string{"connected", "stale", "model", "single", "left", "right", "case", "updated"} {
+	for _, key := range []string{"connected", "stale", "model", "name", "single", "left", "right", "case", "updated"} {
 		if _, ok := m[key]; !ok {
 			t.Errorf("JSON missing key %q: %s", key, b)
 		}
