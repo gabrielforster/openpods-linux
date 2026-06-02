@@ -49,6 +49,24 @@ func (m Model) String() string {
 	return "unknown"
 }
 
+// modelsByID is the inverse of modelNames, built once.
+var modelsByID = func() map[string]Model {
+	m := make(map[string]Model, len(modelNames))
+	for model, id := range modelNames {
+		m[id] = model
+	}
+	return m
+}()
+
+// ParseModel is the inverse of Model.String: it maps a canonical id back to its
+// Model, returning ModelUnknown for anything unrecognized.
+func ParseModel(id string) Model {
+	if m, ok := modelsByID[id]; ok {
+		return m
+	}
+	return ModelUnknown
+}
+
 // displayNames are human-friendly model names for UI surfaces (CLI, notifications,
 // tray, GUI). The single source so a new model is named in one place.
 var displayNames = map[Model]string{

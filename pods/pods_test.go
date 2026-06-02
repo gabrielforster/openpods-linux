@@ -396,6 +396,23 @@ func TestPodMethods(t *testing.T) {
 	}
 }
 
+func TestParseModelRoundTrip(t *testing.T) {
+	all := []pods.Model{
+		pods.ModelUnknown, pods.ModelAirPods1, pods.ModelAirPods2, pods.ModelAirPods3,
+		pods.ModelAirPodsPro, pods.ModelAirPodsPro2, pods.ModelAirPodsPro3, pods.ModelAirPodsMax,
+		pods.ModelPowerbeatsPro, pods.ModelBeatsX, pods.ModelBeatsFlex, pods.ModelBeatsSolo3,
+		pods.ModelBeatsStudio3, pods.ModelPowerbeats3,
+	}
+	for _, m := range all {
+		if got := pods.ParseModel(m.String()); got != m {
+			t.Errorf("ParseModel(%q) = %v, want %v", m.String(), got, m)
+		}
+	}
+	if got := pods.ParseModel("nonsense"); got != pods.ModelUnknown {
+		t.Errorf("ParseModel(nonsense) = %v, want ModelUnknown", got)
+	}
+}
+
 func TestDisplayName(t *testing.T) {
 	cases := map[pods.Model]string{
 		pods.ModelAirPods1:      "AirPods (1st gen)",
